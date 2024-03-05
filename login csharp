@@ -1,0 +1,14 @@
+[HttpPost]
+[Route("login")]
+public async Task<IActionResult> Login(UserLoginDto model)
+{
+    var user = await userManager.FindByNameAsync(model.UserName);
+    if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
+    {
+        // Generate JWT token
+        var token = GenerateJwtToken(user);
+
+        return Ok(new { Token = token });
+    }
+    return Unauthorized();
+}
